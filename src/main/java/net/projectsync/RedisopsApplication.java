@@ -57,12 +57,21 @@ public class RedisopsApplication implements CommandLineRunner {
 		valueOps.set("otp:5678", "981245", Duration.ofMinutes(2)); 								// TTL = 2 minutes
 		log.info("Stored OTP 1: {}", valueOps.get("otp:1234"));									// Stored OTP 1: 789456
 		log.info("Stored OTP 2: {}", valueOps.get("otp:5678"));									// Stored OTP 2: 981245
+		
+		// redisTemplate.delete("otp:5678");   													// deletes key and its value
+		// redisTemplate.delete(List.of("otp:1234", "otp:5678"));								// delete multiple keys at once
+		// log.info("After deleting otp:1234, otp:5678, value = {}", valueOps.get("otp:1234")); // After deleting otp:1234, otp:5678, value = null
 
 		// 2. SET operations — unordered unique collection
 		SetOperations<String, Object> setOps = redisTemplate.opsForSet();
 		setOps.add("user:set:roles", "ADMIN", "USER", "MANAGER", "USER"); 						// duplicates ignored. Use user:roles instead of user:set:roles
 		Set<Object> roles = setOps.members("user:set:roles");
 		log.info("User Roles: {}", roles);														// User Roles: [ADMIN, USER, MANAGER]
+		
+		// setOps.remove("user:set:roles", "USER");    											// removes USER from the set
+		// setOps.remove("user:set:roles", "ADMIN", "MANAGER");									// Remove multiple members
+		// redisTemplate.delete("user:set:roles");     											// deletes the entire Redis key. clears the whole set
+		// log.info("After deleting set key, roles: {}", setOps.members("user:set:roles")); 	// After deleting set key, roles: []
 
 		// 3. HASH operations — structured key-value pairs
 		HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();
