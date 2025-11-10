@@ -94,9 +94,9 @@ public class RedisopsApplication implements CommandLineRunner {
 		Product p1 = new Product(101, "Laptop", 65000);
 		Product p2 = new Product(102, "Smartphone", 25000);
 
-		// Save products
-		valueOpsService.saveProduct(p1);
-		valueOpsService.saveProduct(p2);
+		// Save products with TTL
+		valueOpsService.saveProduct(p1, Duration.ofMinutes(10));
+		valueOpsService.saveProduct(p2, Duration.ofMinutes(10));
 
 		// Retrieve single
 		log.info("Retrieved (101) via ValueOps: {}", valueOpsService.getProduct(101));			// Retrieved (101) via ValueOps: Product [id=101, name=Laptop, price=65000.0]
@@ -127,9 +127,9 @@ public class RedisopsApplication implements CommandLineRunner {
 		Product p3 = new Product(201, "Tablet", 18000);
 		Product p4 = new Product(202, "Monitor", 12000);
 
-		// Save products
-		hashOpsService.saveProduct(p3);
-		hashOpsService.saveProduct(p4);
+		// Save products with TTL
+		hashOpsService.saveProduct(p3, Duration.ofMinutes(10));
+		hashOpsService.saveProduct(p4, Duration.ofMinutes(10));
 
 		// Retrieve single
 		log.info("Retrieved (201) via HashOps: {}", hashOpsService.getProduct(201));			// Retrieved (201) via HashOps: Product [id=201, name=Tablet, price=18000.0]

@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,6 +28,21 @@ public class ProductHashOpsService {
         hashOps.put(key, "price", product.getPrice());
     }
 
+    // Save Product as Redis Hash (with TTL)
+    public void saveProduct(Product product, Duration ttl) {
+        HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();
+        String key = KEY_PREFIX + product.getId();
+
+        hashOps.put(key, "id", product.getId());
+        hashOps.put(key, "name", product.getName());
+        hashOps.put(key, "price", product.getPrice());
+
+        // Apply expiry to the entire hash key
+        if (ttl != null) {
+            redisTemplate.expire(key, ttl);
+        }
+    }
+    
     // Get Product by ID
     public Product getProduct(int id) {
         HashOperations<String, Object, Object> hashOps = redisTemplate.opsForHash();

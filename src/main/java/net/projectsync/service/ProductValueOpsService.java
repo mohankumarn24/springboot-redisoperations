@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,12 @@ public class ProductValueOpsService {
         redisTemplate.opsForValue().set(KEY_PREFIX + product.getId(), product);
     }
 
+    // Save Product with TTL (expire key after given duration)
+    public void saveProduct(Product product, Duration ttl) {
+        ValueOperations<String, Object> valueOps = redisTemplate.opsForValue();
+        valueOps.set(KEY_PREFIX + product.getId(), product, ttl);
+    }
+    
     // Get Product by ID
     public Product getProduct(int id) {
         return (Product) redisTemplate.opsForValue().get(KEY_PREFIX + id);
